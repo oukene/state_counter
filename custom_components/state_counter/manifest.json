@@ -1,0 +1,16 @@
+{
+  "domain": "state_counter",
+  "name": "State Counter",
+  "config_flow": true,
+  "documentation": "https://github.com/oukene/state_counter",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "homekit": {},
+  "dependencies": [],
+  "codeowners": [
+    "@oukene"
+  ],
+  "iot_class": "",
+  "version": "1.0.0"
+}
