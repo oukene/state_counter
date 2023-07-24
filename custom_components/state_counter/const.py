@@ -10,7 +10,8 @@ VERSION = "1.0.0"
 
 CONF_DEVICE_NAME = "device_name"
 CONF_ORIGIN_ENTITY = "origin_entity"
-CONF_WAIT_TIME = "wait_time"
+CONF_COUNT_LATENCY = "count_latency"
+CONF_CONTINUOUS_TIMER = "continuous_timer"
 CONF_ENTITIES = "entities"
 CONF_ADD_ANODHER = "add_another"
 CONF_NAME = "name"
@@ -27,7 +28,7 @@ NUMBER_MAX = 10
 
 OPTIONS = [
     (CONF_ORIGIN_ENTITY, "", cv.string),
-    (CONF_WAIT_TIME, "0.5", vol.All(vol.Coerce(float), vol.Range(0, 1))),
+    (CONF_COUNT_LATENCY, "0.5", vol.All(vol.Coerce(float), vol.Range(0, 1))),
 ]
 
 

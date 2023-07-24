@@ -58,7 +58,8 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     device,
                     entity[CONF_NAME],
                     entity[CONF_ORIGIN_ENTITY],
-                    entity[CONF_WAIT_TIME],
+                    entity[CONF_COUNT_LATENCY],
+                    entity[CONF_CONTINUOUS_TIMER],
                     entity[CONF_MAX_COUNT],
                     entity[CONF_STATE],
                 )
@@ -164,7 +165,7 @@ class SensorBase(SensorEntity):
 class StateCounter(SensorBase):
     """Representation of a Thermal Comfort Sensor."""
 
-    def __init__(self, hass, entry_id, device, entity_name, origin_entity, wait_time, max_count, dict_state):
+    def __init__(self, hass, entry_id, device, entity_name, origin_entity, count_latency, continuous_timer, max_count, dict_state):
         """Initialize the sensor."""
         super().__init__(device)
 
@@ -178,13 +179,13 @@ class StateCounter(SensorBase):
         self._unit_of_measurement = ""
         self._state = None
         self._attributes = {}
-        self._attributes["original entity id"] = origin_entity
-        self._attributes["wait time"] = wait_time
-        self._attributes["state list"] = dict_state
+        self._attributes[CONF_ORIGIN_ENTITY] = origin_entity
+        self._attributes[CONF_COUNT_LATENCY] = count_latency
+        self._attributes[CONF_CONTINUOUS_TIMER] = continuous_timer
+        self._attributes[CONF_STATE] = dict_state
         self._icon = None
         self._entity_picture = None
         self._reset_timer = None
-        self._wait_time = wait_time
         self._max_count = max_count
         self._count = NUMBER_MIN
         self._value = NUMBER_MIN
@@ -222,10 +223,10 @@ class StateCounter(SensorBase):
                           old_state.state, new_state.state)
 
             if _is_valid_state(new_state) and old_state.state != new_state.state:
-                _LOGGER.debug("operator list : %s, state : %s", self._attributes["state list"], str(new_state.state))
-                for key in self._attributes["state list"]:
+                _LOGGER.debug("operator list : %s, state : %s", self._attributes[CONF_STATE], str(new_state.state))
+                for key in self._attributes[CONF_STATE]:
                     ret = False
-                    dict_state = self._attributes["state list"][key]
+                    dict_state = self._attributes[CONF_STATE][key]
 
                     if self.check_operator(new_state.state, dict_state[CONF_OPERATOR], dict_state[CONF_ENTITY_STATE]):
                         self.set_value(int(self._count + dict_state[CONF_COUNT_VALUE]))
@@ -236,11 +237,18 @@ class StateCounter(SensorBase):
     def set_value(self, value: float) -> None:
         self._count = int(min(self._max_count, int(value)))
         _LOGGER.debug("call set value : %f", self._count)
-        if int(self._count) != 0:
-            if self._reset_timer != None:
-                self._reset_timer.cancel()
-            self._reset_timer = Timer(self._wait_time/1000, self.reset)
-            self._reset_timer.start()
+        if int(self._count) != NUMBER_MIN:
+            if self._attributes[CONF_CONTINUOUS_TIMER] == False:
+                if self._reset_timer != None:
+                    self._reset_timer.cancel()
+                _LOGGER.debug("call timer 1")
+                self._reset_timer = Timer(self._attributes[CONF_COUNT_LATENCY]/1000, self.reset)
+                self._reset_timer.start()
+            else:
+                if self._reset_timer == None:
+                    self._reset_timer = Timer(self._attributes[CONF_COUNT_LATENCY]/1000, self.reset)
+                    _LOGGER.debug("call timer 2")
+                    self._reset_timer.start()
 
     def reset(self) -> None:
         self._value = self._count
@@ -250,6 +258,7 @@ class StateCounter(SensorBase):
 
         # 여기에 있었지만 위치 바꿈
         self._device.publish_updates()
+        self._reset_timer = None
 
     # def unique_id(self):
     #    """Return Unique ID string."""
@@ -261,7 +270,7 @@ class StateCounter(SensorBase):
         return True
 
     @property
-    def native_unit_of_measurement(self):
+    def unit_of_measurement(self):
         """Return the unit_of_measurement of the device."""
         return self._unit_of_measurement
 

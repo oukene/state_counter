@@ -27,7 +27,8 @@
                 "data": {
                     "origin_entity": "Enter the entity to be detected",
                     "name": "Enter the name of the sensor to be created",
-                    "wait_time": "continuous state change latency(milliseconds) - ex) 1000ms = 1s)",
+                    "count_latency": "state change detected latency(milliseconds) - ex) 1000ms = 1s)",
+                    "continuous_timer": "Retains the first timer even when the state changes",
                     "max_count": "Please enter a maximum counter value"
                 }
             },
@@ -35,7 +36,7 @@
                 "title": "add operator",
                 "data": {
                     "operator": "Enter an operator",
-                    "entity_state": "Enter the status value to check",
+                    "entity_state": "Enter the status value to be detected",
                     "count_value": "Enter the number of counters to increment",
                     "add_another": "add more operator"
                 }
