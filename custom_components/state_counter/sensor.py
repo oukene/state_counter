@@ -58,7 +58,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     device,
                     entity[CONF_NAME],
                     entity[CONF_ORIGIN_ENTITY],
-                    entity[CONF_COUNT_LATENCY],
+                    entity[CONF_COUNT_WAIT_TIME],
                     entity[CONF_CONTINUOUS_TIMER],
                     entity[CONF_MAX_COUNT],
                     entity[CONF_STATE],
@@ -82,8 +82,8 @@ class Device:
 
         # Some static information about this device
         self.firmware_version = VERSION
-        self.model = name
-        self.manufacturer = name
+        self.model = "astar"
+        self.manufacturer = "astar"
 
     @property
     def device_id(self):
@@ -180,7 +180,7 @@ class StateCounter(SensorBase):
         self._state = None
         self._attributes = {}
         self._attributes[CONF_ORIGIN_ENTITY] = origin_entity
-        self._attributes[CONF_COUNT_LATENCY] = count_latency
+        self._attributes[CONF_COUNT_WAIT_TIME] = count_latency
         self._attributes[CONF_CONTINUOUS_TIMER] = continuous_timer
         self._attributes[CONF_STATE] = dict_state
         self._icon = None
@@ -242,11 +242,11 @@ class StateCounter(SensorBase):
                 if self._reset_timer != None:
                     self._reset_timer.cancel()
                 _LOGGER.debug("call timer 1")
-                self._reset_timer = Timer(self._attributes[CONF_COUNT_LATENCY]/1000, self.reset)
+                self._reset_timer = Timer(self._attributes[CONF_COUNT_WAIT_TIME]/1000, self.reset)
                 self._reset_timer.start()
             else:
                 if self._reset_timer == None:
-                    self._reset_timer = Timer(self._attributes[CONF_COUNT_LATENCY]/1000, self.reset)
+                    self._reset_timer = Timer(self._attributes[CONF_COUNT_WAIT_TIME]/1000, self.reset)
                     _LOGGER.debug("call timer 2")
                     self._reset_timer.start()
 

@@ -27,9 +27,9 @@
                 "data": {
                     "origin_entity": "Enter the entity to be detected",
                     "name": "Enter the name of the sensor to be created",
-                    "count_latency": "state change detected latency(milliseconds) - ex) 1000ms = 1s)",
+                    "count_wait_time": "state change detected wait time(milliseconds) - ex) 1000ms = 1s)",
                     "continuous_timer": "Retains the first timer even when the state changes",
-                    "max_count": "Please enter a maximum counter value"
+                    "count_max": "Please enter a maximum counter value"
                 }
             },
             "state": {

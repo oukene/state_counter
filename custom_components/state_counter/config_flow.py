@@ -114,7 +114,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     all_entities_by_id[(
                         host[CONF_ORIGIN_ENTITY],
                         host[CONF_NAME],
-                        host[CONF_COUNT_LATENCY],
+                        host[CONF_COUNT_WAIT_TIME],
                         host[CONF_CONTINUOUS_TIMER],
                         host[CONF_MAX_COUNT],
                     )] = {  
@@ -138,7 +138,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         self.data[CONF_ENTITIES][key[0]] = {
                                 CONF_ORIGIN_ENTITY: key[0],
                                 CONF_NAME: key[1],
-                                CONF_COUNT_LATENCY: key[2],
+                                CONF_COUNT_WAIT_TIME: key[2],
                                 CONF_CONTINUOUS_TIMER: key[3],
                                 CONF_MAX_COUNT: key[4],
                                 CONF_STATE: all_entities_by_id[key]["state"]
@@ -186,7 +186,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 self.data[CONF_ENTITIES][user_input[CONF_ORIGIN_ENTITY]] = {
                         CONF_ORIGIN_ENTITY: user_input[CONF_ORIGIN_ENTITY],
                         CONF_NAME: user_input.get(CONF_NAME, user_input[CONF_ORIGIN_ENTITY]),
-                        CONF_COUNT_LATENCY: user_input[CONF_COUNT_LATENCY],
+                        CONF_COUNT_WAIT_TIME: user_input[CONF_COUNT_WAIT_TIME],
                         CONF_CONTINUOUS_TIMER: user_input[CONF_CONTINUOUS_TIMER],
                         CONF_MAX_COUNT: user_input[CONF_MAX_COUNT],
                         CONF_STATE: {},
@@ -212,7 +212,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                     {
                         vol.Required(CONF_ORIGIN_ENTITY, default=None): cv.string,
                         vol.Required(CONF_NAME): cv.string,
-                        vol.Required(CONF_COUNT_LATENCY, default=1000): int,
+                        vol.Required(CONF_COUNT_WAIT_TIME, default=1000): int,
                         vol.Required(CONF_CONTINUOUS_TIMER, default=False): cv.boolean,
                         vol.Required(CONF_MAX_COUNT, default=NUMBER_MAX): int,
                         #vol.Optional(CONF_ADD_ANODHER): cv.boolean,
