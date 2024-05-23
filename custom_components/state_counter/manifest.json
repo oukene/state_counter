@@ -4,9 +4,6 @@
   "config_flow": true,
   "documentation": "https://github.com/oukene/state_counter",
   "requirements": [],
-  "ssdp": [],
-  "zeroconf": [],
-  "homekit": {},
   "dependencies": [],
   "codeowners": [
     "@oukene"

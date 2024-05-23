@@ -1,11 +1,6 @@
 """Platform for sensor integration."""
-# This file shows the setup for the sensors associated with the cover.
-# They are setup in the same way with the call to the async_setup_entry function
-# via HA from the module __init__. Each sensor has a device_class, this tells HA how
-# to display it in the UI (for know types). The unit_of_measurement property tells HA
-# what the unit is, so it can display the correct range. For predefined types (such as
-# battery), the unit_of_measurement should match what's expected.
 import logging
+import time
 from threading import Timer
 from homeassistant.const import (
     STATE_UNKNOWN, STATE_UNAVAILABLE,
@@ -154,12 +149,12 @@ class SensorBase(SensorEntity):
     async def async_added_to_hass(self):
         """Run when this Entity has been added to HA."""
         # Sensors should also register callbacks to HA when their state changes
-        self._device.register_callback(self.async_write_ha_state)
+        self._device.register_callback(self.schedule_update_ha_state)
 
     async def async_will_remove_from_hass(self):
         """Entity being removed from hass."""
         # The opposite of async_added_to_hass. Remove any registered call backs here.
-        self._device.remove_callback(self.async_write_ha_state)
+        self._device.remove_callback(self.schedule_update_ha_state)
 
 
 class StateCounter(SensorBase):
@@ -230,7 +225,7 @@ class StateCounter(SensorBase):
 
                     if self.check_operator(new_state.state, dict_state[CONF_OPERATOR], dict_state[CONF_ENTITY_STATE]):
                         self.set_value(int(self._count + dict_state[CONF_COUNT_VALUE]))
-                        self.schedule_update_ha_state(True)
+                        #self.schedule_update_ha_state(True)
         except:
             ''
 
@@ -253,9 +248,9 @@ class StateCounter(SensorBase):
     def reset(self) -> None:
         self._value = self._count
         self._device.publish_updates()
+        time.sleep(0.1)
         self._count = NUMBER_MIN
         self._value = NUMBER_MIN
-
         # 여기에 있었지만 위치 바꿈
         self._device.publish_updates()
         self._reset_timer = None

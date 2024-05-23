@@ -14,7 +14,7 @@ from homeassistant.helpers.device_registry import (
 )
 
 from .const import *
-from homeassistant.helpers.selector import selector
+from homeassistant.helpers import selector
 from homeassistant import config_entries, exceptions
 from homeassistant.core import callback
 from homeassistant.config import CONF_NAME
@@ -209,7 +209,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             step_id="entity",
             data_schema=vol.Schema(
                     {
-                        vol.Required(CONF_ORIGIN_ENTITY, default=None): selector({"entity": {}}),
+                        vol.Required(CONF_ORIGIN_ENTITY, default=None): selector.selector({"entity": {}}),
                         vol.Required(CONF_NAME): cv.string,
                         vol.Required(CONF_COUNT_WAIT_TIME, default=1000): int,
                         vol.Required(CONF_CONTINUOUS_TIMER, default=False): cv.boolean,
