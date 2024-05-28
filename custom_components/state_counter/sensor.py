@@ -9,7 +9,8 @@ from homeassistant.const import (
 import asyncio
 from .const import *
 from homeassistant.helpers.entity import async_generate_entity_id
-from homeassistant.helpers.event import async_track_state_change
+from homeassistant.helpers.event import async_track_state_change_event
+from homeassistant.core import Event, EventStateChangedData, callback
 from homeassistant.components.sensor import SensorEntity
 
 
@@ -189,8 +190,8 @@ class StateCounter(SensorBase):
         self._unique_id = self.entity_id
         self._device = device
 
-        hass.data[DOMAIN][entry_id]["listener"].append(async_track_state_change(
-            self.hass, origin_entity, self.switch_entity_listener))
+        hass.data[DOMAIN][entry_id]["listener"].append(async_track_state_change_event(
+            self.hass, origin_entity, self.entity_listener))
         state = self.hass.states.get(origin_entity)
 
         #if _is_valid_state(state):
@@ -212,7 +213,11 @@ class StateCounter(SensorBase):
         elif operator == SMALLER_THAN:
             return isNumber(op1) and isNumber(op2) and (float)(op1) < (float)(op2)
 
-    def switch_entity_listener(self, entity, old_state, new_state):
+    @callback
+    def entity_listener(self, event:Event):
+        entity = event.data["entity_id"]
+        old_state = event.data["old_state"]
+        new_state = event.data["new_state"]
         try:
             _LOGGER.debug("call switch_entity_listener, old state : %s, new_state : %s",
                           old_state.state, new_state.state)
