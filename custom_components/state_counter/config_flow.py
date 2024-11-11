@@ -17,7 +17,6 @@ from .const import *
 from homeassistant.helpers import selector
 from homeassistant import config_entries, exceptions
 from homeassistant.core import callback
-from homeassistant.config import CONF_NAME
 
 _LOGGER = logging.getLogger(__name__)
 
